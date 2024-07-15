@@ -50,7 +50,6 @@ AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 
 type AvatarWithTextProps = {
   avatarClass?: string;
-  avatarSrc?: string | null;
   avatarFallback: string;
   className?: string;
   primaryText: React.ReactNode;
@@ -62,7 +61,6 @@ type AvatarWithTextProps = {
 
 const AvatarWithText = ({
   avatarClass,
-  avatarSrc,
   avatarFallback,
   className,
   primaryText,
@@ -74,7 +72,6 @@ const AvatarWithText = ({
     <Avatar
       className={cn('dark:border-border h-10 w-10 border-2 border-solid border-white', avatarClass)}
     >
-      {avatarSrc && <AvatarImage src={avatarSrc} />}
       <AvatarFallback className="text-xs text-gray-400">{avatarFallback}</AvatarFallback>
     </Avatar>
 

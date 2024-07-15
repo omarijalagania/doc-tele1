@@ -21,6 +21,7 @@ export const seedDatabase = async () => {
       emailVerified: new Date(),
       password: hashSync('password'),
       roles: [Role.USER],
+      phone: '+995555555555',
     },
     update: {},
   });
@@ -34,6 +35,7 @@ export const seedDatabase = async () => {
       email: 'admin@documenso.com',
       emailVerified: new Date(),
       password: hashSync('password'),
+      phone: '+995555555555',
       roles: [Role.USER, Role.ADMIN],
     },
     update: {},

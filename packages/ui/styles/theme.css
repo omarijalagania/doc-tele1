@@ -12,14 +12,14 @@
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 47.4% 11.2%;
-
+    /* hsl(230.5,100%,24.7%) */
     --card: 0 0% 100%;
     --card-border: 214.3 31.8% 91.4%;
     --card-border-tint: 112 205 159;
     --card-foreground: 222.2 47.4% 11.2%;
 
     --field-card: 95 74% 90%;
-    --field-card-border: 95.08 71.08% 67.45%;
+    --field-card-border: 230.5, 100%, 24.7%;
     --field-card-foreground: 222.2 47.4% 11.2%;
 
     --widget: 0 0% 97%;
@@ -27,7 +27,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
 
-    --primary: 95.08 71.08% 67.45%;
+    --primary: 230.5, 100%, 24.7%;
     --primary-foreground: 95.08 71.08% 10%;
 
     --secondary: 210 40% 96.1%;
@@ -39,13 +39,15 @@
     --destructive: 0 100% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --ring: 95.08 71.08% 67.45%;
+    --ring: 230.5, 100%, 24.7%;
 
     --radius: 0.5rem;
 
     --warning: 54 96% 45%;
+  }
 
-    --gold: 47.9 95.8% 53.1%;
+  ::-webkit-scrollbar {
+    display: none;
   }
 
   .dark {
@@ -68,25 +70,34 @@
     --border: 0 0% 27.9%;
     --input: 0 0% 27.9%;
 
-    --primary: 95.08 71.08% 67.45%;
+    --primary: 230.5, 100%, 24.7%;
     --primary-foreground: 95.08 71.08% 10%;
 
     --secondary: 0 0% 23.4%;
-    --secondary-foreground: 95.08 71.08% 67.45%;
+    --secondary-foreground: 230.5, 100%, 24.7%;
 
     --accent: 0 0% 27.9%;
-    --accent-foreground: 95.08 71.08% 67.45%;
+    --accent-foreground: 230.5, 100%, 24.7%;
 
     --destructive: 0 87% 62%;
     --destructive-foreground: 0 87% 19%;
 
-    --ring: 95.08 71.08% 67.45%;
+    /* inverted yellow */
+    --ring: 50, 100%, 75%;
 
     --radius: 0.5rem;
 
     --warning: 54 96% 45%;
 
-    --gold: 47.9 95.8% 53.1%;
+    /* Dark theme styles */
+    p strong {
+      color: white; /* White for dark themes */
+    }
+    span.s3,
+    span.s1,
+    span.s5 {
+      color: #ffeb81; /* Specific colors for dark themes */
+    }
   }
 }
 

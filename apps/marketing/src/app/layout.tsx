@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import { Caveat, Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import { AxiomWebVitals } from 'next-axiom';
 import { PublicEnvScript } from 'next-runtime-env';
@@ -9,7 +9,6 @@ import { FeatureFlagProvider } from '@documenso/lib/client-only/providers/featur
 import { NEXT_PUBLIC_MARKETING_URL } from '@documenso/lib/constants/app';
 import { getAllAnonymousFlags } from '@documenso/lib/universal/get-feature-flag';
 import { TrpcProvider } from '@documenso/trpc/react';
-import { cn } from '@documenso/ui/lib/utils';
 import { Toaster } from '@documenso/ui/primitives/toaster';
 
 import { ThemeProvider } from '~/providers/next-theme';
@@ -18,8 +17,15 @@ import { PostHogPageview } from '~/providers/posthog';
 
 import './globals.css';
 
-const fontInter = Inter({ subsets: ['latin'], variable: '--font-sans' });
-const fontCaveat = Caveat({ subsets: ['latin'], variable: '--font-signature' });
+const mtavruliMedium = localFont({
+  src: '../../public/fonts/Medium.woff',
+  variable: '--font-mtavruli-medium',
+});
+
+const mtavruliBold = localFont({
+  src: '../../public/fonts/SemiBold.woff',
+  variable: '--font-mtavruli-bold',
+});
 
 export function generateMetadata() {
   return {
@@ -51,15 +57,16 @@ export function generateMetadata() {
   };
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+  params: { locale: string };
+}) {
   const flags = await getAllAnonymousFlags();
 
   return (
-    <html
-      lang="en"
-      className={cn(fontInter.variable, fontCaveat.variable)}
-      suppressHydrationWarning
-    >
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -74,7 +81,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <PostHogPageview />
       </Suspense>
 
-      <body>
+      <body
+        style={{ fontFamily: 'var(--font-mtavruli-medium)' }}
+        className={`${mtavruliMedium.variable} ${mtavruliBold.variable}`}
+      >
         <FeatureFlagProvider initialFlags={flags}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <PlausibleProvider>

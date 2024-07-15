@@ -8,19 +8,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
-import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import { FaIdCardClip } from 'react-icons/fa6';
-import { FcGoogle } from 'react-icons/fc';
-import { z } from 'zod';
 
-import communityCardsImage from '@documenso/assets/images/community-cards.png';
 import { useAnalytics } from '@documenso/lib/client-only/hooks/use-analytics';
 import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
+import { WidgetRegister } from '@documenso/marketing/src/components/(marketing)/widget-register';
 import { TRPCClientError } from '@documenso/trpc/client';
 import { trpc } from '@documenso/trpc/react';
-import { ZPasswordSchema } from '@documenso/trpc/server/auth-router/schema';
 import { cn } from '@documenso/ui/lib/utils';
 import { Button } from '@documenso/ui/primitives/button';
 import {
@@ -28,47 +23,25 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@documenso/ui/primitives/form/form';
 import { Input } from '@documenso/ui/primitives/input';
 import { PasswordInput } from '@documenso/ui/primitives/password-input';
-import { SignaturePad } from '@documenso/ui/primitives/signature-pad';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
 import { UserProfileSkeleton } from '~/components/ui/user-profile-skeleton';
 import { UserProfileTimur } from '~/components/ui/user-profile-timur';
+import { useCurrentLocale, useScopedI18n } from '~/locales/client';
+import type { SignUpSchema } from '~/schemas/sign-up.schema';
+import { signUpSchema } from '~/schemas/sign-up.schema';
+
+import usFlag from '../../../../public/images/en.png';
+import geFlag from '../../../../public/images/ka.png';
+import { Footer } from '../../partials/footer';
 
 const SIGN_UP_REDIRECT_PATH = '/documents';
 
 type SignUpStep = 'BASIC_DETAILS' | 'CLAIM_USERNAME';
-
-export const ZSignUpFormV2Schema = z
-  .object({
-    name: z.string().trim().min(1, { message: 'Please enter a valid name.' }),
-    email: z.string().email().min(1),
-    password: ZPasswordSchema,
-    signature: z.string().min(1, { message: 'We need your signature to sign documents' }),
-    url: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .min(1, { message: 'We need a username to create your profile' })
-      .regex(/^[a-z0-9-]+$/, {
-        message: 'Username can only container alphanumeric characters and dashes.',
-      }),
-  })
-  .refine(
-    (data) => {
-      const { name, email, password } = data;
-      return !password.includes(name) && !password.includes(email.split('@')[0]);
-    },
-    {
-      message: 'Password should not be common or based on personal information',
-    },
-  );
-
-export type TSignUpFormV2Schema = z.infer<typeof ZSignUpFormV2Schema>;
 
 export type SignUpFormV2Props = {
   className?: string;
@@ -89,33 +62,45 @@ export const SignUpFormV2 = ({
   const searchParams = useSearchParams();
 
   const [step, setStep] = useState<SignUpStep>('BASIC_DETAILS');
-
+  const currentLocale = useCurrentLocale();
   const utmSrc = searchParams?.get('utm_source') ?? null;
 
   const baseUrl = new URL(NEXT_PUBLIC_WEBAPP_URL() ?? 'http://localhost:3000');
 
-  const form = useForm<TSignUpFormV2Schema>({
+  const form = useForm<SignUpSchema>({
     values: {
       name: '',
       email: initialEmail ?? '',
       password: '',
-      signature: '',
+      language: currentLocale,
+      repeatPassword: '',
+      phone: '',
       url: '',
     },
-    mode: 'onBlur',
-    resolver: zodResolver(ZSignUpFormV2Schema),
+    mode: 'onChange',
+
+    resolver: zodResolver(signUpSchema),
   });
 
   const isSubmitting = form.formState.isSubmitting;
+
+  const {
+    formState: { errors },
+  } = form;
 
   const name = form.watch('name');
   const url = form.watch('url');
 
   const { mutateAsync: signup } = trpc.auth.signup.useMutation();
 
-  const onFormSubmit = async ({ name, email, password, signature, url }: TSignUpFormV2Schema) => {
+  const scopedT = useScopedI18n('auth');
+  const scopedTV = useScopedI18n('validation');
+
+  console.log(errors?.email?.message);
+
+  const onFormSubmit = async ({ name, email, password, phone, url }: SignUpSchema) => {
     try {
-      await signup({ name, email, password, signature, url });
+      await signup({ name, email, password, phone, url });
 
       router.push(`/unverified-account`);
 
@@ -161,58 +146,81 @@ export const SignUpFormV2 = ({
     }
   };
 
+  // Handle key press to allow only numeric input
+  const handleKeyPress = (event: { charCode: number; preventDefault: () => void }) => {
+    const charCode = event.charCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  };
+
+  // Handle paste to allow only numeric input
+  const handlePaste = (event: {
+    clipboardData: { getData: (arg0: string) => string };
+    preventDefault: () => void;
+  }) => {
+    const paste = (event.clipboardData || window.Clipboard).getData('text');
+    if (!/^\d*$/.test(paste)) {
+      event.preventDefault();
+    }
+  };
+
+  const formatPhoneNumber = (value: string, lang: string) => {
+    if (!value) {
+      return '';
+    }
+
+    const cleaned = value.replace(/\D/g, ''); // Remove non-numeric characters
+
+    if (lang === 'ka') {
+      const match = cleaned.match(/^(\d{1,3})(\d{0,2})(\d{0,2})(\d{0,2})$/);
+      if (match) {
+        return [match[1], match[2], match[3], match[4]].filter(Boolean).join(' ');
+      }
+    } else if (lang === 'en') {
+      const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+      if (match) {
+        return `${match[1]} ${match[2]} ${match[3]}`.trim();
+      }
+    }
+
+    return value;
+  };
+
+  // Handle change to ensure only numeric values are kept
+  const handleChange = (event: { target: { value: string } }) => {
+    const { value } = event.target;
+    const formattedValue = formatPhoneNumber(value, currentLocale);
+
+    form.setValue('phone', formattedValue, { shouldValidate: true });
+  };
+
   const onNextClick = async () => {
-    const valid = await form.trigger(['name', 'email', 'password', 'signature']);
+    const valid = await form.trigger(['name', 'email', 'password', 'repeatPassword', 'phone']);
 
     if (valid) {
       setStep('CLAIM_USERNAME');
     }
   };
 
-  const onSignUpWithGoogleClick = async () => {
-    try {
-      await signIn('google', { callbackUrl: SIGN_UP_REDIRECT_PATH });
-    } catch (err) {
-      toast({
-        title: 'An unknown error occurred',
-        description:
-          'We encountered an unknown error while attempting to sign you Up. Please try again later.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const onSignUpWithOIDCClick = async () => {
-    try {
-      await signIn('oidc', { callbackUrl: SIGN_UP_REDIRECT_PATH });
-    } catch (err) {
-      toast({
-        title: 'An unknown error occurred',
-        description:
-          'We encountered an unknown error while attempting to sign you Up. Please try again later.',
-        variant: 'destructive',
-      });
-    }
-  };
-
   return (
     <div className={cn('flex justify-center gap-x-12', className)}>
-      <div className="border-border relative hidden flex-1 overflow-hidden rounded-xl border xl:flex">
+      <WidgetRegister className="relative hidden  flex-1 rounded-xl  xl:flex">
         <div className="absolute -inset-8 -z-[2] backdrop-blur">
-          <Image
-            src={communityCardsImage}
-            fill={true}
-            alt="community-cards"
-            className="dark:brightness-95 dark:contrast-[70%] dark:invert"
-          />
+          {/* <Image
+              src={communityCardsImage}
+              fill={true}
+              alt="community-cards"
+              className="dark:brightness-95 dark:contrast-[70%] dark:invert"
+            /> */}
         </div>
 
-        <div className="bg-background/50 absolute -inset-8 -z-[1] backdrop-blur-[2px]" />
+        {/* <div className="bg-background/50 absolute -inset-8 -z-[1] backdrop-blur-[2px]" /> */}
 
         <div className="relative flex h-full w-full flex-col items-center justify-evenly">
-          <div className="bg-background rounded-2xl border px-4 py-1 text-sm font-medium">
-            User profiles are coming soon!
-          </div>
+          {/* <div className="bg-background rounded-2xl border px-4 py-1 text-sm font-medium">
+              User profiles are coming soon!
+            </div> */}
 
           <AnimatePresence>
             {step === 'BASIC_DETAILS' ? (
@@ -225,7 +233,7 @@ export const SignUpFormV2 = ({
             ) : (
               <motion.div className="w-full max-w-md" layoutId="user-profile">
                 <UserProfileSkeleton
-                  user={{ name, url }}
+                  user={{ name, url: 'lol' }}
                   rows={2}
                   className="bg-background border-border rounded-2xl border shadow-md"
                 />
@@ -235,28 +243,23 @@ export const SignUpFormV2 = ({
 
           <div />
         </div>
-      </div>
+        <Footer />
+      </WidgetRegister>
 
       <div className="border-border dark:bg-background relative z-10 flex min-h-[min(850px,80vh)] w-full max-w-lg flex-col rounded-xl border bg-neutral-100 p-6">
         {step === 'BASIC_DETAILS' && (
           <div className="h-20">
-            <h1 className="text-xl font-semibold md:text-2xl">Create a new account</h1>
+            <h1 className="text-xl font-semibold md:text-2xl">{scopedT('register')}</h1>
 
-            <p className="text-muted-foreground mt-2 text-xs md:text-sm">
-              Create your account and start using state-of-the-art document signing. Open and
-              beautiful signing is within your grasp.
-            </p>
+            <p className="text-muted-foreground mt-2 text-xs md:text-sm">{scopedT('join')}</p>
           </div>
         )}
 
         {step === 'CLAIM_USERNAME' && (
           <div className="h-20">
-            <h1 className="text-xl font-semibold md:text-2xl">Claim your username now</h1>
+            <h1 className="text-xl font-semibold md:text-2xl">{scopedT('userName')}</h1>
 
-            <p className="text-muted-foreground mt-2 text-xs md:text-sm">
-              You will get notified & be able to set up your documenso public profile when we launch
-              the feature.
-            </p>
+            <p className="text-muted-foreground mt-2 text-xs md:text-sm">{scopedT('slogan')}</p>
           </div>
         )}
 
@@ -268,21 +271,14 @@ export const SignUpFormV2 = ({
             onSubmit={form.handleSubmit(onFormSubmit)}
           >
             {step === 'BASIC_DETAILS' && (
-              <fieldset
-                className={cn(
-                  'flex h-[550px] w-full flex-col gap-y-4',
-                  (isGoogleSSOEnabled || isOIDCSSOEnabled) && 'h-[650px]',
-                )}
-                disabled={isSubmitting}
-              >
+              <fieldset className={cn('flex w-full flex-col gap-y-4')} disabled={isSubmitting}>
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input type="text" {...field} />
+                        <Input placeholder={scopedT('name')} type="text" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -294,9 +290,46 @@ export const SignUpFormV2 = ({
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email Address</FormLabel>
                       <FormControl>
-                        <Input type="email" {...field} />
+                        <Input placeholder={scopedT('email')} type="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="text"
+                          maxLength={currentLocale === 'ka' ? 12 : 12}
+                          minLength={currentLocale === 'ka' ? 12 : 12}
+                          onChange={handleChange}
+                          onKeyPress={handleKeyPress}
+                          onPaste={handlePaste}
+                          placeholder={scopedT('fillPhone')}
+                          //@ts-expect-error - This is a valid prop
+                          prefix={
+                            <>
+                              {currentLocale === 'ka' ? (
+                                <div className="flex items-center space-x-2">
+                                  <Image width={20} height={16} src={geFlag} alt="ka" />
+                                  <p className="font-mtavruliMedium text-sm">+995</p>
+                                </div>
+                              ) : (
+                                <div className="flex items-center space-x-2">
+                                  <Image width={20} height={16} src={usFlag} alt="ka" />
+                                  <p className="font-mtavruliMedium text-sm">+1</p>
+                                </div>
+                              )}
+                            </>
+                          }
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -308,10 +341,8 @@ export const SignUpFormV2 = ({
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
-
                       <FormControl>
-                        <PasswordInput {...field} />
+                        <PasswordInput placeholder={scopedT('password')} {...field} />
                       </FormControl>
 
                       <FormMessage />
@@ -321,17 +352,11 @@ export const SignUpFormV2 = ({
 
                 <FormField
                   control={form.control}
-                  name="signature"
-                  render={({ field: { onChange } }) => (
+                  name="repeatPassword"
+                  render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Sign Here</FormLabel>
                       <FormControl>
-                        <SignaturePad
-                          className="h-36 w-full"
-                          disabled={isSubmitting}
-                          containerClassName="mt-2 rounded-lg border bg-background"
-                          onChange={(v) => onChange(v ?? '')}
-                        />
+                        <PasswordInput placeholder={scopedT('repeatPassword')} {...field} />
                       </FormControl>
 
                       <FormMessage />
@@ -339,52 +364,13 @@ export const SignUpFormV2 = ({
                   )}
                 />
 
-                {(isGoogleSSOEnabled || isOIDCSSOEnabled) && (
-                  <>
-                    <div className="relative flex items-center justify-center gap-x-4 py-2 text-xs uppercase">
-                      <div className="bg-border h-px flex-1" />
-                      <span className="text-muted-foreground bg-transparent">Or</span>
-                      <div className="bg-border h-px flex-1" />
-                    </div>
-                  </>
-                )}
-
-                {isGoogleSSOEnabled && (
-                  <>
-                    <Button
-                      type="button"
-                      size="lg"
-                      variant={'outline'}
-                      className="bg-background text-muted-foreground border"
-                      disabled={isSubmitting}
-                      onClick={onSignUpWithGoogleClick}
-                    >
-                      <FcGoogle className="mr-2 h-5 w-5" />
-                      Sign Up with Google
-                    </Button>
-                  </>
-                )}
-
-                {isOIDCSSOEnabled && (
-                  <>
-                    <Button
-                      type="button"
-                      size="lg"
-                      variant={'outline'}
-                      className="bg-background text-muted-foreground border"
-                      disabled={isSubmitting}
-                      onClick={onSignUpWithOIDCClick}
-                    >
-                      <FaIdCardClip className="mr-2 h-5 w-5" />
-                      Sign Up with OIDC
-                    </Button>
-                  </>
-                )}
-
                 <p className="text-muted-foreground mt-4 text-sm">
-                  Already have an account?{' '}
-                  <Link href="/signin" className="text-documenso-700 duration-200 hover:opacity-70">
-                    Sign in instead
+                  {scopedT('haveAccount')}{' '}
+                  <Link
+                    href="/signin"
+                    className="text-primary duration-200 hover:opacity-70 dark:text-[#ffeb81]"
+                  >
+                    {scopedT('login')}
                   </Link>
                 </p>
               </fieldset>
@@ -403,10 +389,13 @@ export const SignUpFormV2 = ({
                   name="url"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Public profile username</FormLabel>
-
                       <FormControl>
-                        <Input type="text" className="mb-2 mt-2 lowercase" {...field} />
+                        <Input
+                          type="text"
+                          placeholder="username"
+                          className="mb-2 mt-2 lowercase"
+                          {...field}
+                        />
                       </FormControl>
 
                       <FormMessage />
@@ -423,7 +412,7 @@ export const SignUpFormV2 = ({
             <div className="mt-6">
               {step === 'BASIC_DETAILS' && (
                 <p className="text-muted-foreground text-sm">
-                  <span className="font-medium">Basic details</span> 1/2
+                  <span className="font-medium">{scopedT('step')}</span> 1/2
                 </p>
               )}
 
@@ -437,7 +426,7 @@ export const SignUpFormV2 = ({
                 <motion.div
                   layout="size"
                   layoutId="document-flow-container-step"
-                  className="bg-documenso absolute inset-y-0 left-0 rounded-full"
+                  className="bg-primary absolute inset-y-0 left-0 rounded-full dark:bg-[#ffeb81]"
                   style={{
                     width: step === 'BASIC_DETAILS' ? '50%' : '100%',
                   }}
@@ -455,7 +444,7 @@ export const SignUpFormV2 = ({
                 disabled={step === 'BASIC_DETAILS' || form.formState.isSubmitting}
                 onClick={() => setStep('BASIC_DETAILS')}
               >
-                Back
+                {scopedT('back')}
               </Button>
 
               {/* Continue button */}
@@ -467,7 +456,7 @@ export const SignUpFormV2 = ({
                   loading={form.formState.isSubmitting}
                   onClick={onNextClick}
                 >
-                  Next
+                  {scopedT('continue')}
                 </Button>
               )}
 
@@ -480,7 +469,7 @@ export const SignUpFormV2 = ({
                   size="lg"
                   className="flex-1"
                 >
-                  Complete
+                  {scopedT('finish')}
                 </Button>
               )}
             </div>

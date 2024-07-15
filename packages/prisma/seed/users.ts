@@ -8,6 +8,7 @@ type SeedUserOptions = {
   name?: string;
   email?: string;
   password?: string;
+  phone?: string;
   verified?: boolean;
 };
 
@@ -19,6 +20,7 @@ export const seedUser = async ({
   name,
   email,
   password = 'password',
+  phone = '+995555555555',
   verified = true,
 }: SeedUserOptions = {}) => {
   if (!name) {
@@ -33,6 +35,7 @@ export const seedUser = async ({
     data: {
       name,
       email,
+      phone,
       password: hashSync(password),
       emailVerified: verified ? new Date() : undefined,
       url: name,

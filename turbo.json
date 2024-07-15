@@ -2,23 +2,12 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": [
-        "prebuild",
-        "^build"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**"
-      ]
+      "dependsOn": ["prebuild", "^build"],
+      "outputs": [".next/**", "!.next/cache/**"]
     },
     "prebuild": {
-      "dependsOn": [
-        "^prebuild"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**"
-      ]
+      "dependsOn": ["^prebuild"],
+      "outputs": [".next/**", "!.next/cache/**"]
     },
     "lint": {
       "cache": false
@@ -34,9 +23,7 @@
       "persistent": true
     },
     "start": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
@@ -44,15 +31,11 @@
       "cache": false
     },
     "test:e2e": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "cache": false
     }
   },
-  "globalDependencies": [
-    "**/.env.*local"
-  ],
+  "globalDependencies": ["**/.env.*local"],
   "globalEnv": [
     "APP_VERSION",
     "NEXT_PRIVATE_ENCRYPTION_KEY",
@@ -63,6 +46,7 @@
     "NEXT_PUBLIC_WEBAPP_URL",
     "NEXT_PUBLIC_MARKETING_URL",
     "NEXT_PUBLIC_POSTHOG_KEY",
+    "NEXT_PUBLIC_API_URL",
     "NEXT_PUBLIC_FEATURE_BILLING_ENABLED",
     "NEXT_PUBLIC_STRIPE_COMMUNITY_PLAN_MONTHLY_PRICE_ID",
     "NEXT_PUBLIC_STRIPE_ENTERPRISE_PLAN_MONTHLY_PRICE_ID",

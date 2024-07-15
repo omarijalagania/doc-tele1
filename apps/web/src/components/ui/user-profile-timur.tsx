@@ -4,11 +4,12 @@ import Image from 'next/image';
 
 import { File } from 'lucide-react';
 
-import timurImage from '@documenso/assets/images/timur.png';
-import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+import timurImage from '@documenso/assets/images/logo.png';
 import { VerifiedIcon } from '@documenso/ui/icons/verified';
 import { cn } from '@documenso/ui/lib/utils';
 import { Button } from '@documenso/ui/primitives/button';
+
+import { useScopedI18n } from '~/locales/client';
 
 export type UserProfileTimurProps = {
   className?: string;
@@ -16,8 +17,8 @@ export type UserProfileTimurProps = {
 };
 
 export const UserProfileTimur = ({ className, rows = 2 }: UserProfileTimurProps) => {
-  const baseUrl = new URL(NEXT_PUBLIC_WEBAPP_URL() ?? 'http://localhost:3000');
-
+  const baseUrl = 'https://app.esignx.com';
+  const scopedT = useScopedI18n('auth');
   return (
     <div
       className={cn(
@@ -26,35 +27,29 @@ export const UserProfileTimur = ({ className, rows = 2 }: UserProfileTimurProps)
       )}
     >
       <div className="border-border bg-background text-muted-foreground inline-block max-w-full truncate rounded-md border px-2.5 py-1.5 text-sm">
-        {baseUrl.host}/u/timur
+        {baseUrl}
       </div>
 
       <div className="mt-4">
-        <Image
-          src={timurImage}
-          className="h-20 w-20 rounded-full"
-          alt="image of timur ercan founder of documenso"
-        />
+        <Image src={timurImage} className="h-20 w-20 rounded-full dark:invert" alt="logo" />
       </div>
 
       <div className="mt-6">
         <div className="flex items-center justify-center gap-x-2">
-          <h2 className="text-2xl font-semibold">Timur Ercan</h2>
+          <h2 className="text-2xl font-semibold">{scopedT('name')}</h2>
 
-          <VerifiedIcon className="text-primary h-8 w-8" />
+          <VerifiedIcon className="text-primary h-8 w-8 dark:text-[#ffeb81]" />
         </div>
 
-        <p className="text-muted-foreground mt-4 max-w-[40ch] text-center text-sm">Hey I’m Timur</p>
-
-        <p className="text-muted-foreground mt-1 max-w-[40ch] text-center text-sm">
+        {/* <p className="text-muted-foreground mt-1 max-w-[40ch] text-center text-sm">
           Pick any of the following agreements below and start signing to get started
-        </p>
+        </p> */}
       </div>
 
       <div className="mt-8 w-full">
         <div className="dark:divide-foreground/30 dark:border-foreground/30 divide-y-2 divide-neutral-200 overflow-hidden rounded-lg border-2 border-neutral-200">
           <div className="text-muted-foreground dark:bg-foreground/20 bg-neutral-50 p-4 font-medium">
-            Documents
+            {scopedT('documents')}
           </div>
 
           {Array(rows)
@@ -75,7 +70,7 @@ export const UserProfileTimur = ({ className, rows = 2 }: UserProfileTimurProps)
 
                 <div className="flex-shrink-0">
                   <Button type="button" size="sm" className="pointer-events-none w-32">
-                    Sign
+                    {scopedT('sign')}
                   </Button>
                 </div>
               </div>

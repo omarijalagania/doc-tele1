@@ -30,6 +30,7 @@ model User {
   email            String           @unique
   emailVerified    DateTime?
   password         String?
+  phone            String
   source           String?
   signature        String?
   createdAt        DateTime         @default(now())

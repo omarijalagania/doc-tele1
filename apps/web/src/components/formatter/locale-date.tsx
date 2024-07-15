@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { DateTimeFormatOptions } from 'luxon';
 import { DateTime } from 'luxon';
 
-import { useLocale } from '@documenso/lib/client-only/providers/locale';
+import { useCurrentLocale } from '~/locales/client';
 
 export type LocaleDateProps = HTMLAttributes<HTMLSpanElement> & {
   date: string | number | Date;
@@ -20,7 +20,7 @@ export type LocaleDateProps = HTMLAttributes<HTMLSpanElement> & {
  * the client browser locale once mounted.
  */
 export const LocaleDate = ({ className, date, format, ...props }: LocaleDateProps) => {
-  const { locale } = useLocale();
+  const locale = useCurrentLocale();
 
   const formatDateTime = useCallback(
     (date: DateTime) => {

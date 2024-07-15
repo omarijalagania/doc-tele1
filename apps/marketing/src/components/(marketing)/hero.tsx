@@ -1,20 +1,19 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 import type { Variants } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { usePlausible } from 'next-plausible';
-import { LuGithub } from 'react-icons/lu';
 import { match } from 'ts-pattern';
 
-import backgroundPattern from '@documenso/assets/images/background-pattern.png';
 import { useFeatureFlags } from '@documenso/lib/client-only/providers/feature-flag';
 import { cn } from '@documenso/ui/lib/utils';
-import { Button } from '@documenso/ui/primitives/button';
+import { Card, CardContent } from '@documenso/ui/primitives/card';
 
-import { Carousel } from './carousel';
+import { useScopedI18n } from '~/locales/client';
+
+import { Widget } from './widget';
 
 export type HeroProps = {
   className?: string;
@@ -50,80 +49,264 @@ const HeroTitleVariants: Variants = {
   },
 };
 
-const HeroCarouselVariants: Variants = {
-  initial: {
-    opacity: 0,
-    y: 60,
-  },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: 0.5,
-      duration: 0.8,
-    },
-  },
-};
-
 export const Hero = ({ className, ...props }: HeroProps) => {
   const event = usePlausible();
+
+  const scopedT = useScopedI18n('cards');
+  const scopedTDescription = useScopedI18n('description');
 
   const { getFlag } = useFeatureFlags();
 
   const heroMarketingCTA = getFlag('marketing_landing_hero_cta');
 
+  const onSignUpClick = () => {
+    const el = document.getElementById('email');
+
+    if (el) {
+      const { top } = el.getBoundingClientRect();
+
+      window.scrollTo({
+        top: top - 120,
+        behavior: 'smooth',
+      });
+
+      requestAnimationFrame(() => {
+        el.focus();
+      });
+    }
+  };
+
   return (
     <motion.div className={cn('relative', className)} {...props}>
-      <div className="absolute -inset-24 -z-10">
-        <motion.div
-          className="flex h-full w-full origin-top-right items-center justify-center"
-          variants={BackgroundPatternVariants}
-          initial="initial"
-          animate="animate"
-        >
-          <Image
-            src={backgroundPattern}
-            alt="background pattern"
-            className="-mr-[50vw] -mt-[15vh] h-full scale-125 object-cover dark:contrast-[70%] dark:invert dark:sepia md:scale-150 lg:scale-[175%]"
-          />
-        </motion.div>
-      </div>
-
       <div className="relative">
         <motion.h2
+          style={{ fontFamily: 'var(--font-mtavruli-bold)' }}
           variants={HeroTitleVariants}
           initial="initial"
           animate="animate"
-          className="text-center text-4xl font-bold leading-tight tracking-tight md:text-[48px] lg:text-[64px]"
+          className="text-center text-4xl leading-tight tracking-tight md:text-[40px] lg:text-[44px]"
         >
-          Document signing,
-          <span className="block" /> finally open source.
+          {scopedTDescription('elSign')}
         </motion.h2>
 
         <motion.div
-          variants={HeroTitleVariants}
+          className="mt-12"
+          variants={{
+            initial: {
+              scale: 0.2,
+              opacity: 0,
+            },
+            animate: {
+              scale: 1,
+              opacity: 1,
+              transition: {
+                ease: 'easeInOut',
+                delay: 0.5,
+                duration: 0.8,
+              },
+            },
+          }}
           initial="initial"
           animate="animate"
-          className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-4"
         >
-          <Link href="https://app.documenso.com/signup?utm_source=marketing-hero">
-            <Button
-              type="button"
-              variant="outline"
-              className="rounded-full bg-transparent backdrop-blur-sm"
-            >
-              Try our Free Plan
-              <span className="bg-primary dark:text-background -mr-2.5 ml-2.5 rounded-full px-2 py-1.5 text-xs font-medium">
-                No Credit Card required
-              </span>
-            </Button>
-          </Link>
-          <Link href="https://github.com/documenso/documenso" onClick={() => event('view-github')}>
-            <Button variant="outline" className="rounded-full bg-transparent backdrop-blur-sm">
-              <LuGithub className="mr-2 h-5 w-5" />
-              Star on GitHub
-            </Button>
-          </Link>
+          <Widget className="mt-12">
+            {/* <strong>{scopedTDescription('elSign')}</strong> */}
+            <p className="w-full max-w-[70ch] text-base">{scopedTDescription('desc1')}</p>
+            <p className="w-full max-w-[70ch] text-base">{scopedTDescription('desc2')}</p>
+
+            <div className="flex h-24 items-center">
+              <p
+                style={{
+                  fontFamily: 'var(--font-mtavruli-bold)',
+                }}
+                className={cn('text-5xl')}
+              >
+                {scopedTDescription('signSlogan')}
+              </p>
+            </div>
+
+            <div>
+              <strong>{scopedTDescription('coFounder')}</strong>
+              {/* <p className="mt-1">Co-Founders, Documenso</p> */}
+            </div>
+          </Widget>
+        </motion.div>
+
+        <motion.div
+          className="mt-12"
+          variants={{
+            initial: {
+              scale: 0.2,
+              opacity: 0,
+            },
+            animate: {
+              scale: 1,
+              opacity: 1,
+              transition: {
+                ease: 'easeInOut',
+                delay: 0.5,
+                duration: 0.8,
+              },
+            },
+          }}
+          initial="initial"
+          animate="animate"
+        >
+          <div className="mt-6 grid grid-cols-2 gap-8 md:mt-8">
+            <Card gradient className="col-span-2 lg:col-span-1" spotlight>
+              <CardContent className="grid grid-cols-1 gap-8 p-6">
+                <p className="text-muted-foreground text-base leading-relaxed ">
+                  <strong
+                    style={{ fontFamily: 'var(--font-mtavruli-bold)' }}
+                    className="block text-[44px]"
+                  >
+                    {scopedT('create')}
+                  </strong>
+                  {scopedT('createSendDescription')}
+                </p>
+
+                <div className="flex items-center justify-center p-8 opacity-40">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-folder-plus dark:invert"
+                    width="200"
+                    height="200"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1"
+                    stroke="#00147E"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 19h-7a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v3.5"></path>
+                    <path d="M16 19h6" className="text-green-400"></path>
+                    <path d="M19 16v6" className="text-green-400"></path>
+                  </svg>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="col-span-2 lg:col-span-1" spotlight>
+              <CardContent className="grid grid-cols-1 gap-8 p-6">
+                <p className="text-muted-foreground text-base leading-relaxed">
+                  <strong
+                    style={{ fontFamily: 'var(--font-mtavruli-bold)' }}
+                    className="block text-[44px]"
+                  >
+                    {scopedT('send')}
+                  </strong>
+                  {scopedT('createSendDescription')}
+                </p>
+
+                <div className="flex items-center justify-center p-8 opacity-40">
+                  {/* <Image
+                  src={cardBeautifulFigure}
+                  alt="its fast"
+                  className="w-full max-w-xs dark:contrast-[70%] dark:hue-rotate-180 dark:invert"
+                /> */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-certificate dark:invert"
+                    width="200"
+                    height="200"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1"
+                    stroke="#00147E"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path
+                      d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"
+                      className="text-success"
+                    ></path>
+                    <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" className="text-success"></path>
+                    <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73"></path>
+                    <path d="M6 9l12 0"></path>
+                    <path d="M6 12l3 0"></path>
+                    <path d="M6 15l2 0"></path>
+                  </svg>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-6 grid  grid-cols-2 gap-8 md:mt-8">
+            <Card className="col-span-2 lg:col-span-1" spotlight>
+              <CardContent className="grid grid-cols-1 gap-8 p-6">
+                <p className="text-muted-foreground text-base leading-relaxed">
+                  <strong
+                    style={{ fontFamily: 'var(--font-mtavruli-bold)' }}
+                    className="block text-[44px]"
+                  >
+                    {scopedT('sign')}
+                  </strong>
+                  {scopedT('createSignDescription')}
+                </p>
+
+                <div className="flex items-center justify-center p-8 opacity-40">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-mail-forward dark:invert"
+                    width="200"
+                    height="200"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1"
+                    stroke="#00147E"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 18h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5"></path>
+                    <path d="M3 6l9 6l9 -6"></path>
+                    <path d="M15 18h6" className="text-success"></path>
+                    <path d="M18 15l3 3l-3 3" className="text-success"></path>
+                  </svg>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="col-span-2 lg:col-span-1" gradient degrees={300} spotlight>
+              <CardContent className="grid grid-cols-1 gap-8 p-6">
+                <p className="text-muted-foreground text-base leading-relaxed">
+                  <strong
+                    style={{ fontFamily: 'var(--font-mtavruli-bold)' }}
+                    className="block text-[44px]"
+                  >
+                    {scopedT('done')}
+                  </strong>
+                  {scopedT('createDescription')}
+                </p>
+
+                <div className="flex items-center justify-center p-8 opacity-40">
+                  {/* <Image
+                  src={cardBeautifulFigure}
+                  alt="its fast"
+                  className="w-full max-w-xs dark:contrast-[70%] dark:hue-rotate-180 dark:invert"
+                /> */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-circle-check dark:invert"
+                    width="200"
+                    height="200"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1"
+                    stroke="#00147E"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                    <path d="M9 12l2 2l4 -4" className="text-success"></path>
+                  </svg>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </motion.div>
 
         {match(heroMarketingCTA)
@@ -165,15 +348,6 @@ export const Hero = ({ className, ...props }: HeroProps) => {
             </motion.div>
           ))
           .otherwise(() => null)}
-
-        <motion.div
-          className="mt-12"
-          variants={HeroCarouselVariants}
-          initial="initial"
-          animate="animate"
-        >
-          <Carousel />
-        </motion.div>
       </div>
     </motion.div>
   );

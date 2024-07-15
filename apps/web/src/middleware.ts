@@ -1,81 +1,83 @@
-import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
 
-import { getToken } from 'next-auth/jwt';
+import { createI18nMiddleware } from 'next-international/middleware';
 
-import { TEAM_URL_ROOT_REGEX } from '@documenso/lib/constants/teams';
-import { formatDocumentsPath } from '@documenso/lib/utils/teams';
+const I18nMiddleware = createI18nMiddleware({
+  locales: ['en', 'ka'],
+  defaultLocale: 'en',
+});
 
 export default async function middleware(req: NextRequest) {
-  const preferredTeamUrl = cookies().get('preferred-team-url');
+  return await I18nMiddleware(req);
 
-  const referrer = req.headers.get('referer');
-  const referrerUrl = referrer ? new URL(referrer) : null;
-  const referrerPathname = referrerUrl ? referrerUrl.pathname : null;
+  // const preferredTeamUrl = cookies().get('preferred-team-url');
 
-  // Whether to reset the preferred team url cookie if the user accesses a non team page from a team page.
-  const resetPreferredTeamUrl =
-    referrerPathname &&
-    referrerPathname.startsWith('/t/') &&
-    (!req.nextUrl.pathname.startsWith('/t/') || req.nextUrl.pathname === '/');
+  // const referrer = req.headers.get('referer');
+  // const referrerUrl = referrer ? new URL(referrer) : null;
+  // const referrerPathname = referrerUrl ? referrerUrl.pathname : null;
 
-  // Redirect root page to `/documents` or `/t/{preferredTeamUrl}/documents`.
-  if (req.nextUrl.pathname === '/') {
-    const redirectUrlPath = formatDocumentsPath(
-      resetPreferredTeamUrl ? undefined : preferredTeamUrl?.value,
-    );
+  // // Whether to reset the preferred team url cookie if the user accesses a non team page from a team page.
+  // const resetPreferredTeamUrl =
+  //   referrerPathname &&
+  //   referrerPathname.startsWith('/t/') &&
+  //   (!req.nextUrl.pathname.startsWith('/t/') || req.nextUrl.pathname === '/');
 
-    const redirectUrl = new URL(redirectUrlPath, req.url);
-    const response = NextResponse.redirect(redirectUrl);
+  // // Redirect root page to `/documents` or `/t/{preferredTeamUrl}/documents`.
+  // if (req.nextUrl.pathname === '/') {
+  //   const redirectUrlPath = formatDocumentsPath(
+  //     resetPreferredTeamUrl ? undefined : preferredTeamUrl?.value,
+  //   );
 
-    return response;
-  }
+  //   const redirectUrl = new URL(redirectUrlPath, req.url);
+  //   const response = NextResponse.redirect(redirectUrl);
 
-  // Redirect `/t` to `/settings/teams`.
-  if (req.nextUrl.pathname === '/t') {
-    const redirectUrl = new URL('/settings/teams', req.url);
+  //   return response;
+  // }
 
-    return NextResponse.redirect(redirectUrl);
-  }
+  // // Redirect `/t` to `/settings/teams`.
+  // if (req.nextUrl.pathname === '/t') {
+  //   const redirectUrl = new URL('/settings/teams', req.url);
 
-  // Redirect `/t/<team_url>` to `/t/<team_url>/documents`.
-  if (TEAM_URL_ROOT_REGEX.test(req.nextUrl.pathname)) {
-    const redirectUrl = new URL(`${req.nextUrl.pathname}/documents`, req.url);
+  //   return NextResponse.redirect(redirectUrl);
+  // }
 
-    const response = NextResponse.redirect(redirectUrl);
-    response.cookies.set('preferred-team-url', req.nextUrl.pathname.replace('/t/', ''));
+  // // Redirect `/t/<team_url>` to `/t/<team_url>/documents`.
+  // if (TEAM_URL_ROOT_REGEX.test(req.nextUrl.pathname)) {
+  //   const redirectUrl = new URL(`${req.nextUrl.pathname}/documents`, req.url);
 
-    return response;
-  }
+  //   const response = NextResponse.redirect(redirectUrl);
+  //   response.cookies.set('preferred-team-url', req.nextUrl.pathname.replace('/t/', ''));
 
-  // Set the preferred team url cookie if user accesses a team page.
-  if (req.nextUrl.pathname.startsWith('/t/')) {
-    const response = NextResponse.next();
-    response.cookies.set('preferred-team-url', req.nextUrl.pathname.split('/')[2]);
+  //   return response;
+  // }
 
-    return response;
-  }
+  // // Set the preferred team url cookie if user accesses a team page.
+  // if (req.nextUrl.pathname.startsWith('/t/')) {
+  //   const response = NextResponse.next();
+  //   response.cookies.set('preferred-team-url', req.nextUrl.pathname.split('/')[2]);
 
-  if (req.nextUrl.pathname.startsWith('/signin')) {
-    const token = await getToken({ req });
+  //   return response;
+  // }
 
-    if (token) {
-      const redirectUrl = new URL('/documents', req.url);
+  // // if (req.nextUrl.pathname.startsWith('/signin')) {
+  // //   const token = await getToken({ req });
 
-      return NextResponse.redirect(redirectUrl);
-    }
-  }
+  // //   if (token) {
+  // //     const redirectUrl = new URL('/documents', req.url);
 
-  // Clear preferred team url cookie if user accesses a non team page from a team page.
-  if (resetPreferredTeamUrl || req.nextUrl.pathname === '/documents') {
-    const response = NextResponse.next();
-    response.cookies.set('preferred-team-url', '');
+  // //     return NextResponse.redirect(redirectUrl);
+  // //   }
+  // // }
+  // I18nMiddleware(req);
+  // // Clear preferred team url cookie if user accesses a non team page from a team page.
+  // if (resetPreferredTeamUrl || req.nextUrl.pathname === '/documents') {
+  //   const response = NextResponse.next();
+  //   response.cookies.set('preferred-team-url', '');
 
-    return response;
-  }
+  //   return response;
+  // }
 
-  return NextResponse.next();
+  // return NextResponse.next();
 }
 
 export const config = {

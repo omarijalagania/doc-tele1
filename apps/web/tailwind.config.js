@@ -9,4 +9,8 @@ module.exports = {
     `${path.join(require.resolve('@documenso/ui'), '..')}/**/*.{ts,tsx}`,
     `${path.join(require.resolve('@documenso/email'), '..')}/**/*.{ts,tsx}`,
   ],
+  fontFamily: {
+    mtavtuliMedium: ['var(--font-mtavruli-medium)'],
+    mtavruliBold: ['var(--font-mtavruli-bold)'],
+  },
 };

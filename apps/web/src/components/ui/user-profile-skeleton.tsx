@@ -8,6 +8,8 @@ import { VerifiedIcon } from '@documenso/ui/icons/verified';
 import { cn } from '@documenso/ui/lib/utils';
 import { Button } from '@documenso/ui/primitives/button';
 
+import { useScopedI18n } from '~/locales/client';
+
 export type UserProfileSkeletonProps = {
   className?: string;
   user: Pick<User, 'name' | 'url'>;
@@ -16,6 +18,8 @@ export type UserProfileSkeletonProps = {
 
 export const UserProfileSkeleton = ({ className, user, rows = 2 }: UserProfileSkeletonProps) => {
   const baseUrl = new URL(NEXT_PUBLIC_WEBAPP_URL() ?? 'http://localhost:3000');
+
+  const scopedT = useScopedI18n('auth');
 
   return (
     <div
@@ -40,7 +44,7 @@ export const UserProfileSkeleton = ({ className, user, rows = 2 }: UserProfileSk
         <div className="flex items-center justify-center gap-x-2">
           <h2 className="max-w-[12rem] truncate text-2xl font-semibold">{user.name}</h2>
 
-          <VerifiedIcon className="text-primary h-8 w-8" />
+          <VerifiedIcon className="text-primary h-8 w-8 dark:text-[#ffeb81]" />
         </div>
 
         <div className="dark:bg-foreground/30 mx-auto mt-4 h-2 w-52 rounded-full bg-neutral-300" />
@@ -50,7 +54,7 @@ export const UserProfileSkeleton = ({ className, user, rows = 2 }: UserProfileSk
       <div className="mt-8 w-full">
         <div className="dark:divide-foreground/30 dark:border-foreground/30 divide-y-2 divide-neutral-200 overflow-hidden rounded-lg border-2 border-neutral-200">
           <div className="text-muted-foreground dark:bg-foreground/20 bg-neutral-50 p-4 font-medium">
-            Documents
+            {scopedT('documents')}
           </div>
 
           {Array(rows)
@@ -71,7 +75,7 @@ export const UserProfileSkeleton = ({ className, user, rows = 2 }: UserProfileSk
 
                 <div className="flex-shrink-0">
                   <Button type="button" size="sm" className="pointer-events-none w-32">
-                    Sign
+                    {scopedT('sign')}
                   </Button>
                 </div>
               </div>

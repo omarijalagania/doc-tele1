@@ -41,7 +41,7 @@ export const authRouter = router({
         });
       }
 
-      const { name, email, password, signature, url } = input;
+      const { name, email, password, phone, url } = input;
 
       if (IS_BILLING_ENABLED() && url && url.length < 6) {
         throw new AppError(
@@ -50,7 +50,7 @@ export const authRouter = router({
         );
       }
 
-      const user = await createUser({ name, email, password, signature, url });
+      const user = await createUser({ name, email, password, phone, url });
 
       await jobsClient.triggerJob({
         name: 'send.signup.confirmation.email',

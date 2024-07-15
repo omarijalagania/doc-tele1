@@ -9,10 +9,12 @@ import {
 } from '@documenso/lib/constants/feature-flags';
 import { getAllFlags } from '@documenso/lib/universal/get-feature-flag';
 
-import { TFeatureFlagValue } from './feature-flag.types';
+import type { TFeatureFlagValue } from './feature-flag.types';
 
 export type FeatureFlagContextValue = {
   getFlag: (_key: string) => TFeatureFlagValue;
+  currentCountry?: string;
+  setCurrentCountry: (_country: string) => void;
 };
 
 export const FeatureFlagContext = createContext<FeatureFlagContextValue | null>(null);
@@ -35,6 +37,7 @@ export function FeatureFlagProvider({
   initialFlags: Record<string, TFeatureFlagValue>;
 }) {
   const [flags, setFlags] = useState(initialFlags);
+  const [currentCountry, setCurrentCountry] = useState<string>();
 
   const getFlag = useCallback(
     (flag: string) => {
@@ -87,6 +90,8 @@ export function FeatureFlagProvider({
     <FeatureFlagContext.Provider
       value={{
         getFlag,
+        currentCountry,
+        setCurrentCountry,
       }}
     >
       {children}

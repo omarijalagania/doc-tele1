@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { ControllerProps, FieldPath, FieldValues } from 'react-hook-form';
 import { Controller, FormProvider, useFormContext } from 'react-hook-form';
 
+import { useScopedI18n } from '../../../../apps/web/src/locales/client';
 import { cn } from '../../lib/utils';
 import { Label } from '../label';
 
@@ -38,7 +39,7 @@ const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
   const itemContext = React.useContext(FormItemContext);
   const { getFieldState, formState } = useFormContext();
-
+  const scopedTV = useScopedI18n('validation');
   const fieldState = getFieldState(fieldContext.name, formState);
 
   if (!fieldContext) {
@@ -50,6 +51,7 @@ const useFormField = () => {
   return {
     id,
     name: fieldContext.name,
+    scopedTV,
     formItemId: `${id}-form-item`,
     formDescriptionId: `${id}-form-item-description`,
     formMessageId: `${id}-form-item-message`,
@@ -136,7 +138,7 @@ const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
-  const { error, formMessageId } = useFormField();
+  const { error, formMessageId, scopedTV } = useFormField();
   const body = error ? String(error?.message) : children;
 
   if (!body) {
@@ -165,7 +167,8 @@ const FormMessage = React.forwardRef<
           className={cn('text-xs text-red-500', className)}
           {...props}
         >
-          {body}
+          {/* @ts-expect-error dfd */}
+          {scopedTV(body)}
         </p>
       </motion.div>
     </AnimatePresence>
