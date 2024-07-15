@@ -1,7 +1,6 @@
 import { CheckCircle2, Clock } from 'lucide-react';
 import { P, match } from 'ts-pattern';
 
-import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { getRequiredServerComponentSession } from '@documenso/lib/next-auth/get-server-component-session';
 import { getTeamByUrl } from '@documenso/lib/server-only/team/get-team';
 import { extractInitials } from '@documenso/lib/utils/recipient-formatter';
@@ -65,7 +64,7 @@ export default async function TeamsSettingsPage({ params }: TeamsSettingsPagePro
             <div className="flex flex-row items-center justify-between pt-4">
               <AvatarWithText
                 avatarClass="h-12 w-12"
-                avatarSrc={`${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${team.avatarImageId}`}
+                //avatarSrc={`${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${team.avatarImageId}`}
                 avatarFallback={extractInitials(
                   (team.teamEmail?.name || team.emailVerification?.name) ?? '',
                 )}

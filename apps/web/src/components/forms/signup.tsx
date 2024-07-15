@@ -34,11 +34,11 @@ export const ZSignUpFormSchema = z
     name: z.string().trim().min(1, { message: 'Please enter a valid name.' }),
     email: z.string().email().min(1),
     password: ZPasswordSchema,
-    signature: z.string().min(1, { message: 'We need your signature to sign documents' }),
+    phone: z.string(),
   })
   .refine(
     (data) => {
-      const { name, email, password } = data;
+      const { name, email, password, phone } = data;
       return !password.includes(name) && !password.includes(email.split('@')[0]);
     },
     {
@@ -70,7 +70,7 @@ export const SignUpForm = ({
       name: '',
       email: initialEmail ?? '',
       password: '',
-      signature: '',
+      phone: '',
     },
     resolver: zodResolver(ZSignUpFormSchema),
   });
@@ -79,9 +79,9 @@ export const SignUpForm = ({
 
   const { mutateAsync: signup } = trpc.auth.signup.useMutation();
 
-  const onFormSubmit = async ({ name, email, password, signature }: TSignUpFormSchema) => {
+  const onFormSubmit = async ({ name, email, password, phone }: TSignUpFormSchema) => {
     try {
-      await signup({ name, email, password, signature });
+      await signup({ name, email, password, phone });
 
       router.push(`/unverified-account`);
 
@@ -191,7 +191,7 @@ export const SignUpForm = ({
 
           <FormField
             control={form.control}
-            name="signature"
+            name="phone"
             render={({ field: { onChange } }) => (
               <FormItem>
                 <FormLabel>Sign Here</FormLabel>

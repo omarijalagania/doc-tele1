@@ -33,6 +33,7 @@ export const ZClaimAccountFormSchema = z
   .object({
     name: z.string().trim().min(1, { message: 'Please enter a valid name.' }),
     email: z.string().email().min(1),
+    phone: z.string(),
     password: ZPasswordSchema,
   })
   .refine(
@@ -59,14 +60,15 @@ export const ClaimAccount = ({ defaultName, defaultEmail }: ClaimAccountProps) =
     values: {
       name: defaultName ?? '',
       email: defaultEmail,
+      phone: '',
       password: '',
     },
     resolver: zodResolver(ZClaimAccountFormSchema),
   });
 
-  const onFormSubmit = async ({ name, email, password }: TClaimAccountFormSchema) => {
+  const onFormSubmit = async ({ name, email, password, phone }: TClaimAccountFormSchema) => {
     try {
-      await signup({ name, email, password });
+      await signup({ name, email, password, phone });
 
       router.push(`/unverified-account`);
 

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 
-import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { TEAM_MEMBER_ROLE_MAP } from '@documenso/lib/constants/teams';
 import type { TeamMemberRole } from '@documenso/prisma/client';
 import { trpc } from '@documenso/trpc/react';
@@ -78,7 +77,7 @@ export const LeaveTeamDialog = ({
         <Alert variant="neutral" padding="tight">
           <AvatarWithText
             avatarClass="h-12 w-12"
-            avatarSrc={`${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${teamAvatarImageId}`}
+            //avatarSrc={`${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${teamAvatarImageId}`}
             avatarFallback={teamName.slice(0, 1).toUpperCase()}
             primaryText={teamName}
             secondaryText={TEAM_MEMBER_ROLE_MAP[role]}

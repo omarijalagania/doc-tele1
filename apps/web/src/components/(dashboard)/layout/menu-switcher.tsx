@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import { CheckCircle2, ChevronsUpDown, Plus, Settings2 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
-import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { TEAM_MEMBER_ROLE_MAP, TEAM_URL_REGEX } from '@documenso/lib/constants/teams';
 import { isAdmin } from '@documenso/lib/next-auth/guards/is-admin';
 import type { GetTeamsResponse } from '@documenso/lib/server-only/team/get-teams';
@@ -100,9 +99,9 @@ export const MenuSwitcher = ({ user, teams: initialTeamsData }: MenuSwitcherProp
           className="relative flex h-12 flex-row items-center px-0 py-2 ring-0 focus:outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-transparent md:px-2"
         >
           <AvatarWithText
-            avatarSrc={`${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${
-              selectedTeam ? selectedTeam.avatarImageId : user.avatarImageId
-            }`}
+            // avatarSrc={`${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${
+            //   selectedTeam ? selectedTeam.avatarImageId : user.avatarImageId
+            // }`}
             avatarFallback={formatAvatarFallback(selectedTeam?.name)}
             primaryText={selectedTeam ? selectedTeam.name : user.name}
             secondaryText={formatSecondaryAvatarText(selectedTeam)}
@@ -126,11 +125,11 @@ export const MenuSwitcher = ({ user, teams: initialTeamsData }: MenuSwitcherProp
             <DropdownMenuItem asChild>
               <Link href={formatRedirectUrlOnSwitch()}>
                 <AvatarWithText
-                  avatarSrc={
-                    user.avatarImageId
-                      ? `${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${user.avatarImageId}`
-                      : undefined
-                  }
+                  // avatarSrc={
+                  //   user.avatarImageId
+                  //     ? `${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${user.avatarImageId}`
+                  //     : undefined
+                  // }
                   avatarFallback={formatAvatarFallback()}
                   primaryText={user.name}
                   secondaryText={formatSecondaryAvatarText()}
@@ -189,11 +188,11 @@ export const MenuSwitcher = ({ user, teams: initialTeamsData }: MenuSwitcherProp
                     href={formatRedirectUrlOnSwitch(team.url)}
                   >
                     <AvatarWithText
-                      avatarSrc={
-                        team.avatarImageId
-                          ? `${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${team.avatarImageId}`
-                          : undefined
-                      }
+                      // avatarSrc={
+                      //   team.avatarImageId
+                      //     ? `${NEXT_PUBLIC_WEBAPP_URL()}/api/avatar/${team.avatarImageId}`
+                      //     : undefined
+                      // }
                       avatarFallback={formatAvatarFallback(team.name)}
                       primaryText={team.name}
                       secondaryText={

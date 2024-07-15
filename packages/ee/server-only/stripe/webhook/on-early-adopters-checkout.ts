@@ -49,7 +49,7 @@ export const onEarlyAdoptersCheckout = async ({ session }: OnEarlyAdoptersChecko
         name,
         email: email.toLowerCase(),
         password: hashSync(tempPassword),
-        signature: signatureDataUrlRef,
+        phone: '',
       },
     });
 
