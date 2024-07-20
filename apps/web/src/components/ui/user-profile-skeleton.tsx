@@ -1,7 +1,10 @@
 'use client';
 
-import { File, User2 } from 'lucide-react';
+import Image from 'next/image';
 
+import { File } from 'lucide-react';
+
+import timurImage from '@documenso/assets/images/logo.png';
 import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import type { User } from '@documenso/prisma/client';
 import { VerifiedIcon } from '@documenso/ui/icons/verified';
@@ -34,9 +37,7 @@ export const UserProfileSkeleton = ({ className, user, rows = 2 }: UserProfileSk
 
       <div className="mt-4">
         <div className="bg-primary/10 rounded-full p-1.5">
-          <div className="bg-background flex h-20 w-20 items-center justify-center rounded-full border-2">
-            <User2 className="h-12 w-12 text-[hsl(228,10%,90%)]" />
-          </div>
+          <Image src={timurImage} className="h-20 w-20 rounded-full dark:invert" alt="logo" />
         </div>
       </div>
 

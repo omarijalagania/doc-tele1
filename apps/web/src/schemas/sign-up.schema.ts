@@ -18,7 +18,7 @@ export const signUpSchema = z
       .string()
       .trim()
       .toLowerCase()
-      .min(1, { message: 'We need a username to create your profile' })
+      .min(1, { message: 'required' })
       .regex(/^[a-z0-9-]+$/, {
         message: 'Username can only container alphanumeric characters and dashes.',
       }),

@@ -26,7 +26,7 @@ export default {
     nameN: 'Name',
     surNameN: 'Last Name',
     userName: 'Username',
-    slogan: 'username For eSignix public profile',
+    slogan: 'We need a username to create your profile',
     finish: 'Finish',
     haveAccount: 'Already have an account?',
     privacy: 'Terms & Conditions',

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import {
   DropdownMenu,
@@ -13,6 +13,13 @@ import { useChangeLocale, useCurrentLocale } from '~/locales/client';
 import useFetchLocation from '../../../../marketing/src/hooks/useFetchLocation';
 
 function LanguageSwitch() {
+  useFetchLocation();
+  const currentLocale = useCurrentLocale();
+  const changeLocale = useChangeLocale();
+  const [currentCountryCode, setCurrentCountryCode] = useState('en');
+
+  useFetchLocation();
+
   let options = [
     {
       id: 1,
@@ -26,21 +33,9 @@ function LanguageSwitch() {
     },
   ];
 
-  const { locationIp } = useFetchLocation();
-  const currentLocale = useCurrentLocale();
-  const changeLocale = useChangeLocale();
-  const [currentCountryCode, setCurrentCountryCode] = useState('en');
+  const lang = localStorage.getItem('countryCode');
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const nonEmpty = localStorage.getItem('countryCode');
-      if (nonEmpty) {
-        setCurrentCountryCode(locationIp === 'GE' ? 'ka' : 'en');
-      }
-    }
-  }, [locationIp]);
-
-  if (locationIp !== 'GE' && currentCountryCode === 'en') {
+  if (lang !== 'ka') {
     options = options.filter((option) => option.value !== 'ka');
   }
 
@@ -53,7 +48,7 @@ function LanguageSwitch() {
       <DropdownMenuTrigger className="text-xs outline-none ring-0">
         {options.find((item) => item.value === currentLocale)?.label.includes('EN') ? 'EN' : 'KA'}
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="mt-3">
         {options.map((option) => (
           <DropdownMenuItem
             className="py-0 text-xs"

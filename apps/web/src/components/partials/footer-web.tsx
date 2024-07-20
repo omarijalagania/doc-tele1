@@ -1,10 +1,6 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
 'use client';
 
 import { type HTMLAttributes } from 'react';
-
-import { Facebook, YoutubeIcon } from 'lucide-react';
-import { FaXTwitter } from 'react-icons/fa6';
 
 import { useFeatureFlags } from '@documenso/lib/client-only/providers/feature-flag';
 import { cn } from '@documenso/ui/lib/utils';
@@ -24,107 +20,9 @@ import LanguageSwitch from './language-switch';
 
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
 // import { StatusWidgetContainer } from './status-widget-container';
 
 export type FooterProps = HTMLAttributes<HTMLDivElement>;
-
-const SOCIAL_LINKS = [
-  { href: 'https://twitter.com/documenso', icon: <FaXTwitter className="h-6 w-6" /> },
-  { href: 'https://github.com/documenso/documenso', icon: <Facebook className="h-6 w-6" /> },
-  { href: 'https://www.youtube.com/@e-Signix', icon: <YoutubeIcon className="h-7 w-7" /> },
-];
-
-const FOOTER_LINKS = [
-  { href: '/terms', text: 'terms' },
-
-  { href: '/security', text: 'security' },
-  { href: '/privacy', text: 'privacy' },
-  { href: '/about', text: 'about' },
-
-  { href: '/law', text: 'law' },
-  { href: '/contact', text: 'contactUs' },
-  { href: '/cookie', text: 'cookie' },
-
-  //  { href: '/pricing', text: 'pricing' },
-];
 
 const COUNTRIES = [
   {

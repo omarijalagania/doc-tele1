@@ -39,8 +39,6 @@ import { signUpSchema } from '~/schemas/sign-up.schema';
 import usFlag from '../../../../public/images/en.png';
 import geFlag from '../../../../public/images/ka.png';
 
-const SIGN_UP_REDIRECT_PATH = '/documents';
-
 type SignUpStep = 'BASIC_DETAILS' | 'CLAIM_USERNAME';
 
 export type SignUpFormV2Props = {
@@ -54,7 +52,6 @@ export const SignUpFormV2 = ({
   className,
   initialEmail,
   isGoogleSSOEnabled,
-  isOIDCSSOEnabled,
 }: SignUpFormV2Props) => {
   const { toast } = useToast();
   const analytics = useAnalytics();
@@ -99,7 +96,7 @@ export const SignUpFormV2 = ({
   const scopedT = useScopedI18n('auth');
   const scopedTV = useScopedI18n('validation');
 
-  console.log(errors);
+  const countryCode = localStorage.getItem('countryCode');
 
   const onFormSubmit = async ({ name, email, password, phone, url }: SignUpSchema) => {
     try {
@@ -193,7 +190,7 @@ export const SignUpFormV2 = ({
   // Handle change to ensure only numeric values are kept
   const handleChange = (event: { target: { value: string } }) => {
     const { value } = event.target;
-    const formattedValue = formatPhoneNumber(value, currentLocale);
+    const formattedValue = formatPhoneNumber(value, countryCode || 'en');
 
     form.setValue('phone', formattedValue, { shouldValidate: true });
   };
@@ -325,7 +322,7 @@ export const SignUpFormV2 = ({
                           //@ts-expect-error - This is a valid prop
                           prefix={
                             <>
-                              {currentLocale === 'ka' ? (
+                              {countryCode === 'ka' ? (
                                 <div className="flex items-center space-x-2">
                                   <Image width={20} height={16} src={geFlag} alt="ka" />
                                   <p className="font-mtavruliMedium text-sm">+995</p>
@@ -383,7 +380,7 @@ export const SignUpFormV2 = ({
                           <Checkbox
                             className={`${
                               errors.isAgreed?.message ? 'border-red-300' : ''
-                            } mb-2 h-4 w-4`}
+                            } mr-2 h-4 w-4`}
                             checked={field.value}
                             onCheckedChange={field.onChange}
                           />
@@ -395,18 +392,26 @@ export const SignUpFormV2 = ({
                   <div className="text-sm text-gray-500">
                     {scopedT('agree')}{' '}
                     <Link
+                      passHref
+                      legacyBehavior
                       href={`http://localhost:3001/${currentLocale}/terms`}
                       className="hover:text-green-primary inline-block cursor-pointer font-semibold text-gray-700 transition-colors"
                     >
-                      {scopedT('privacy')}
-                    </Link>{' '}
+                      <a className="text-primary" target="_blank">
+                        {' '}
+                        {scopedT('privacy')}{' '}
+                      </a>
+                    </Link>
                     <span>{scopedT('and')} </span>
                     <Link
+                      passHref
+                      legacyBehavior
                       href={`http://localhost:3001/${currentLocale}/privacy`}
                       className="hover:text-green-primary inline-block cursor-pointer font-semibold text-gray-700 transition-colors"
                     >
-                      {' '}
-                      {scopedT('politics')}
+                      <a className="text-primary" target="_blank">
+                        {scopedT('politics')}
+                      </a>
                     </Link>
                   </div>
                 </div>
@@ -439,7 +444,7 @@ export const SignUpFormV2 = ({
                       <FormControl>
                         <Input
                           type="text"
-                          placeholder="username"
+                          placeholder={scopedT('userName')}
                           className="mb-2 mt-2 lowercase"
                           {...field}
                         />
@@ -465,7 +470,7 @@ export const SignUpFormV2 = ({
 
               {step === 'CLAIM_USERNAME' && (
                 <p className="text-muted-foreground text-sm">
-                  <span className="font-medium">Claim username</span> 2/2
+                  <span className="font-medium">{scopedT('step')}</span> 2/2
                 </p>
               )}
 

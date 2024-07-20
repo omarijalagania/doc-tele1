@@ -17,7 +17,7 @@ export type UserProfileTimurProps = {
 };
 
 export const UserProfileTimur = ({ className, rows = 2 }: UserProfileTimurProps) => {
-  const baseUrl = 'https://app.esignx.com';
+  const baseUrl = 'https://app.esignix.com';
   const scopedT = useScopedI18n('auth');
   return (
     <div
