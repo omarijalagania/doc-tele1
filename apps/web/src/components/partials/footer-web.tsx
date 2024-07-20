@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 'use client';
 
-import { type HTMLAttributes, useEffect } from 'react';
+import { type HTMLAttributes } from 'react';
 
 import { Facebook, YoutubeIcon } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
 
+import { useFeatureFlags } from '@documenso/lib/client-only/providers/feature-flag';
 import { cn } from '@documenso/ui/lib/utils';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -18,64 +20,7 @@ import { ThemeSwitcher } from '@documenso/ui/primitives/theme-switcher';
 
 import { useChangeLocale, useCurrentLocale, useScopedI18n } from '~/locales/client';
 
-import useFetchLocation from '../../../../marketing/src/hooks/useFetchLocation';
 import LanguageSwitch from './language-switch';
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
 
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
@@ -194,53 +139,57 @@ const COUNTRIES = [
   },
 ];
 
-export const Footer = ({ className, ...props }: FooterProps) => {
+export const FooterWeb = ({ className, ...props }: FooterProps) => {
   const scopedT = useScopedI18n('footer');
   const currentLocale = useCurrentLocale();
   const changeLocale = useChangeLocale();
-  const { locationIp } = useFetchLocation();
+  const { setCurrentCountry } = useFeatureFlags();
 
-  useEffect(() => {
-    if (locationIp === 'GE') {
-      changeLocale('ka');
-    }
-  }, [changeLocale, locationIp]);
+  const countryHandler = (value: string) => {
+    //setLang(value);
+    changeLocale(value as 'ka' | 'en');
+    localStorage.setItem('countryCode', value);
+    setCurrentCountry(value);
+  };
+
+  const lang = localStorage.getItem('countryCode') as string;
 
   return (
-    <div className={cn('max-w-md', className)} {...props}>
-      <div className="absolute bottom-3 flex w-[90%] flex-wrap items-center justify-between gap-4">
-        {/* <p className="text-muted-foreground text-sm">
+    <div className={cn('absolute bottom-1 w-full sm:bottom-5', className)} {...props}>
+      <div className="mx-auto mt-4 flex w-full flex-col-reverse flex-wrap items-center justify-between gap-4 px-2 sm:flex-row md:max-w-screen-2xl md:px-16">
+        <p className="text-muted-foreground text-sm">
           © {new Date().getFullYear()} Telecom 1 LLC. All rights reserved.
-        </p> */}
+        </p>
 
         <div className="flex flex-wrap space-x-8">
-          <Select onValueChange={(value) => changeLocale(value as 'ka' | 'en')}>
+          <Select
+            defaultValue={lang && (lang as string)}
+            onValueChange={(value) => countryHandler(value)}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue
                 className="outline-none ring-0 focus:outline-none focus:ring-0"
                 placeholder={scopedT(
-                  COUNTRIES.find((country) => country.value === currentLocale)
+                  COUNTRIES.find((country) => country.value === lang)
                     ?.label as keyof typeof scopedT,
                 )}
               />
             </SelectTrigger>
             <SelectContent>
               {COUNTRIES.map((country) => (
-                <SelectItem
-                  className="dark:hover:text-[#FFEB81]"
-                  key={country.id}
-                  value={country.value}
-                >
-                  {scopedT(country.label as keyof typeof scopedT)}
-                </SelectItem>
+                <SelectGroup key={country.id}>
+                  <SelectItem className="dark:hover:text-[#FFEB81]" value={country.value}>
+                    {scopedT(country.label as keyof typeof scopedT)}
+                  </SelectItem>
+                </SelectGroup>
               ))}
             </SelectContent>
           </Select>
 
           <LanguageSwitch />
-        </div>
 
-        <ThemeSwitcher />
+          <ThemeSwitcher />
+        </div>
       </div>
     </div>
   );

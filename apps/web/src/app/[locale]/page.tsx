@@ -6,6 +6,7 @@ import { env } from 'next-runtime-env';
 import { decryptSecondaryData } from '@documenso/lib/server-only/crypto/decrypt';
 
 import { SignUpFormV2 } from '~/components/forms/v2/signup';
+import { FooterWeb } from '~/components/partials/footer-web';
 
 export const metadata: Metadata = {
   title: 'Sign Up',
@@ -32,8 +33,9 @@ export default function SignUpPage({ searchParams }: SignUpPageProps) {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center">
       <SignUpFormV2 className="w-screen max-w-screen-2xl px-4 md:px-16 lg:-my-16" />
+      <FooterWeb />
     </div>
   );
 }

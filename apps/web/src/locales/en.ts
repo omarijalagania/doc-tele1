@@ -56,6 +56,7 @@ export default {
   },
   validation: {
     required: 'Please fill the required field',
+    agreeRules: 'You must agree to the terms and conditions',
     passwordRequired: 'Please fill the required field',
     repeatPasswordRequired: 'Please fill the required field',
     phone: 'Please fill the required field',

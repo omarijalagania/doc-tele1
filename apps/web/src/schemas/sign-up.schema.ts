@@ -23,6 +23,9 @@ export const signUpSchema = z
         message: 'Username can only container alphanumeric characters and dashes.',
       }),
     phone: z.string(),
+    // isAgreed: z
+    //   .boolean()
+    //   .refine((value) => value === true, 'You must agree to the terms and conditions'),
     // phone: z.string().min(5, {
     //   message: 'phone',
     // }),
@@ -31,14 +34,11 @@ export const signUpSchema = z
     repeatPassword: z.string().min(6, messages.passwordLengthMin),
 
     //industry: z.string().trim().min(1, messages.industryIsRequired),
-    // isAgreed: z.boolean().refine((value) => value === true, {
-    //   message: 'Please agree to the terms and conditions',
-    // }),
-    // isAgreed: z.boolean().refine((value) => value === true, {
-    //   message: messages.phoneLengthEn,
-    // }),
-  })
 
+    isAgreed: z.boolean().refine((value) => value === true, {
+      message: 'You must agree to the terms and conditions',
+    }),
+  })
   .refine(
     (values) => {
       if (values.language === 'ka') {

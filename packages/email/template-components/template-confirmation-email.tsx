@@ -6,6 +6,8 @@ export type TemplateConfirmationEmailProps = {
   assetBaseUrl: string;
 };
 
+//მაილის გაგზავნის შაბლონი
+
 export const TemplateConfirmationEmail = ({
   confirmationLink,
   assetBaseUrl,

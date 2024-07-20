@@ -56,6 +56,7 @@ export default {
   },
   validation: {
     required: 'გთხოვთ შეავსოთ აუცილებელი ველი',
+    agreeRules: 'თქვენ უნდა დაეთანხმოთ წესებს და პირობებს',
     passwordRequired: 'გთხოვთ შეავსოთ აუცილებელი ველი',
     repeatPasswordRequired: 'გთხოვთ შეავსოთ აუცილებელი ველი',
     phone: 'გთხოვთ შეავსოთ აუცილებელი ველი',

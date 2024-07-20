@@ -18,6 +18,7 @@ import { TRPCClientError } from '@documenso/trpc/client';
 import { trpc } from '@documenso/trpc/react';
 import { cn } from '@documenso/ui/lib/utils';
 import { Button } from '@documenso/ui/primitives/button';
+import { Checkbox } from '@documenso/ui/primitives/checkbox';
 import {
   Form,
   FormControl,
@@ -37,7 +38,6 @@ import { signUpSchema } from '~/schemas/sign-up.schema';
 
 import usFlag from '../../../../public/images/en.png';
 import geFlag from '../../../../public/images/ka.png';
-import { Footer } from '../../partials/footer';
 
 const SIGN_UP_REDIRECT_PATH = '/documents';
 
@@ -76,6 +76,7 @@ export const SignUpFormV2 = ({
       repeatPassword: '',
       phone: '',
       url: '',
+      isAgreed: false,
     },
     mode: 'onChange',
 
@@ -88,6 +89,8 @@ export const SignUpFormV2 = ({
     formState: { errors },
   } = form;
 
+  const { register, getValues } = form;
+
   const name = form.watch('name');
   const url = form.watch('url');
 
@@ -96,7 +99,7 @@ export const SignUpFormV2 = ({
   const scopedT = useScopedI18n('auth');
   const scopedTV = useScopedI18n('validation');
 
-  console.log(errors?.email?.message);
+  console.log(errors);
 
   const onFormSubmit = async ({ name, email, password, phone, url }: SignUpSchema) => {
     try {
@@ -196,7 +199,14 @@ export const SignUpFormV2 = ({
   };
 
   const onNextClick = async () => {
-    const valid = await form.trigger(['name', 'email', 'password', 'repeatPassword', 'phone']);
+    const valid = await form.trigger([
+      'name',
+      'email',
+      'password',
+      'repeatPassword',
+      'isAgreed',
+      'phone',
+    ]);
 
     if (valid) {
       setStep('CLAIM_USERNAME');
@@ -243,10 +253,9 @@ export const SignUpFormV2 = ({
 
           <div />
         </div>
-        <Footer />
       </WidgetRegister>
 
-      <div className="border-border dark:bg-background relative z-10 flex min-h-[min(850px,80vh)] w-full max-w-lg flex-col rounded-xl border bg-neutral-100 p-6">
+      <div className="border-border dark:bg-background bg-muted relative z-10 flex min-h-[min(850px,80vh)] w-full max-w-lg flex-col rounded-xl border p-6">
         {step === 'BASIC_DETAILS' && (
           <div className="h-20">
             <h1 className="text-xl font-semibold md:text-2xl">{scopedT('register')}</h1>
@@ -364,6 +373,44 @@ export const SignUpFormV2 = ({
                   )}
                 />
 
+                <div className="flex items-center space-x-1">
+                  <FormField
+                    control={form.control}
+                    name="isAgreed"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
+                        <FormControl>
+                          <Checkbox
+                            className={`${
+                              errors.isAgreed?.message ? 'border-red-300' : ''
+                            } mb-2 h-4 w-4`}
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="text-sm text-gray-500">
+                    {scopedT('agree')}{' '}
+                    <Link
+                      href={`http://localhost:3001/${currentLocale}/terms`}
+                      className="hover:text-green-primary inline-block cursor-pointer font-semibold text-gray-700 transition-colors"
+                    >
+                      {scopedT('privacy')}
+                    </Link>{' '}
+                    <span>{scopedT('and')} </span>
+                    <Link
+                      href={`http://localhost:3001/${currentLocale}/privacy`}
+                      className="hover:text-green-primary inline-block cursor-pointer font-semibold text-gray-700 transition-colors"
+                    >
+                      {' '}
+                      {scopedT('politics')}
+                    </Link>
+                  </div>
+                </div>
+
                 <p className="text-muted-foreground mt-4 text-sm">
                   {scopedT('haveAccount')}{' '}
                   <Link
@@ -474,6 +521,7 @@ export const SignUpFormV2 = ({
               )}
             </div>
           </form>
+          {/* <Footer /> */}
         </Form>
       </div>
     </div>
