@@ -86,15 +86,11 @@ export const SignUpFormV2 = ({
     formState: { errors },
   } = form;
 
-  const { register, getValues } = form;
-
   const name = form.watch('name');
-  const url = form.watch('url');
 
   const { mutateAsync: signup } = trpc.auth.signup.useMutation();
 
   const scopedT = useScopedI18n('auth');
-  const scopedTV = useScopedI18n('validation');
 
   const countryCode = localStorage.getItem('countryCode');
 
@@ -102,12 +98,11 @@ export const SignUpFormV2 = ({
     try {
       await signup({ name, email, password, phone, url });
 
-      router.push(`/unverified-account`);
+      router.push(`/${currentLocale}/unverified-account`);
 
       toast({
-        title: 'Registration Successful',
-        description:
-          'You have successfully registered. Please verify your account by clicking on the link you received in the email.',
+        title: scopedT('success'),
+        description: scopedT('accountCreated'),
         duration: 5000,
       });
 
@@ -122,7 +117,7 @@ export const SignUpFormV2 = ({
       if (error.code === AppErrorCode.PROFILE_URL_TAKEN) {
         form.setError('url', {
           type: 'manual',
-          message: 'This username has already been taken',
+          message: scopedT('usernameTaken'),
         });
       } else if (error.code === AppErrorCode.PREMIUM_PROFILE_URL) {
         form.setError('url', {
@@ -137,7 +132,7 @@ export const SignUpFormV2 = ({
         });
       } else {
         toast({
-          title: 'An unknown error occurred',
+          title: scopedT('errorOccurred'),
           description:
             'We encountered an unknown error while attempting to sign you up. Please try again later.',
           variant: 'destructive',

@@ -18,6 +18,8 @@ import {
 import { Input } from '@documenso/ui/primitives/input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
+import { useScopedI18n } from '~/locales/client';
+
 export const ZSendConfirmationEmailFormSchema = z.object({
   email: z.string().email().min(1),
 });
@@ -30,6 +32,7 @@ export type SendConfirmationEmailFormProps = {
 
 export const SendConfirmationEmailForm = ({ className }: SendConfirmationEmailFormProps) => {
   const { toast } = useToast();
+  const scopedT = useScopedI18n('auth');
 
   const form = useForm<TSendConfirmationEmailFormSchema>({
     values: {
@@ -47,17 +50,16 @@ export const SendConfirmationEmailForm = ({ className }: SendConfirmationEmailFo
       await sendConfirmationEmail({ email });
 
       toast({
-        title: 'Confirmation email sent',
-        description:
-          'A confirmation email has been sent, and it should arrive in your inbox shortly.',
+        title: scopedT('confirmationEmail'),
+        description: scopedT('toastEmail'),
         duration: 5000,
       });
 
       form.reset();
     } catch (err) {
       toast({
-        title: 'An error occurred while sending your confirmation email',
-        description: 'Please try again and make sure you enter the correct email address.',
+        title: scopedT('toastEmailError'),
+        description: scopedT('toastDescription'),
         variant: 'destructive',
       });
     }
@@ -75,7 +77,7 @@ export const SendConfirmationEmailForm = ({ className }: SendConfirmationEmailFo
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email address</FormLabel>
+                <FormLabel>{scopedT('email')}</FormLabel>
                 <FormControl>
                   <Input type="email" {...field} />
                 </FormControl>

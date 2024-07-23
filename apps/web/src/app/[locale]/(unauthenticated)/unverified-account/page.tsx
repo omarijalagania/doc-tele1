@@ -1,8 +1,12 @@
+'use client';
+
 import { Mails } from 'lucide-react';
 
 import { SendConfirmationEmailForm } from '~/components/forms/send-confirmation-email';
+import { useScopedI18n } from '~/locales/client';
 
 export default function UnverifiedAccount() {
+  const scopedT = useScopedI18n('auth');
   return (
     <div className="w-screen max-w-lg px-4">
       <div className="flex items-start">
@@ -10,16 +14,11 @@ export default function UnverifiedAccount() {
           <Mails className="text-primary h-10 w-10" strokeWidth={2} />
         </div>
         <div className="">
-          <h2 className="text-2xl font-bold md:text-4xl">Confirm email</h2>
+          <h2 className="text-2xl font-bold md:text-4xl">{scopedT('confirmEmailTitle')}</h2>
 
-          <p className="text-muted-foreground mt-4">
-            To gain access to your account, please confirm your email address by clicking on the
-            confirmation link from your inbox.
-          </p>
+          <p className="text-muted-foreground mt-4">{scopedT('pleaseConfirm')}</p>
 
-          <p className="text-muted-foreground mt-4">
-            If you don't find the confirmation link in your inbox, you can request a new one below.
-          </p>
+          <p className="text-muted-foreground mt-4">{scopedT('unverifiedAccount')}</p>
 
           <SendConfirmationEmailForm />
         </div>
