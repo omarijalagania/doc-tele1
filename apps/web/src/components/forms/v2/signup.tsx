@@ -124,10 +124,17 @@ export const SignUpFormV2 = ({
           type: 'manual',
           message: error.message,
         });
+      } else if (error.message.includes('phone')) {
+        toast({
+          title: 'An error occurred',
+          description: scopedT('phoneTaken'),
+          variant: 'destructive',
+        });
       } else if (err instanceof TRPCClientError && err.data?.code === 'BAD_REQUEST') {
         toast({
           title: 'An error occurred',
-          description: err.message,
+          //@ts-expect-error - This is a valid prop
+          description: scopedT(err.message),
           variant: 'destructive',
         });
       } else {
@@ -206,7 +213,7 @@ export const SignUpFormV2 = ({
   };
 
   return (
-    <div className={cn('flex justify-center gap-x-12', className)}>
+    <div className={cn('flex justify-center gap-x-14', className)}>
       <WidgetRegister className="relative hidden  flex-1 rounded-xl  xl:flex">
         <div className="absolute -inset-8 -z-[2] backdrop-blur">
           {/* <Image
@@ -247,7 +254,7 @@ export const SignUpFormV2 = ({
         </div>
       </WidgetRegister>
 
-      <div className="border-border dark:bg-background bg-muted relative z-10 flex min-h-[min(850px,80vh)] w-full max-w-lg flex-col rounded-xl border p-6">
+      <div className="border-border dark:bg-background bg-muted relative z-10 flex min-h-[min(850px,80vh)] w-full max-w-xl flex-col rounded-xl border p-6">
         {step === 'BASIC_DETAILS' && (
           <div className="h-20">
             <h1 className="text-xl font-semibold md:text-2xl">{scopedT('register')}</h1>

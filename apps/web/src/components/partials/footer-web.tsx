@@ -53,9 +53,12 @@ export const FooterWeb = ({ className, ...props }: FooterProps) => {
   const lang = localStorage.getItem('countryCode') as string;
 
   return (
-    <div className={cn('absolute bottom-1 w-full sm:bottom-5', className)} {...props}>
-      <div className="mx-auto mt-4 flex w-full flex-col-reverse flex-wrap items-center justify-between gap-4 px-2 sm:flex-row md:max-w-screen-2xl md:px-16">
-        <p className="text-muted-foreground text-sm">
+    <div
+      className={cn('mx-auto w-full max-w-screen-2xl px-4 py-10 md:px-16', className)}
+      {...props}
+    >
+      <div className="mt-4 flex w-full flex-col-reverse flex-wrap items-center justify-between xl:flex-row">
+        <p className="text-muted-foreground pt-3 text-sm">
           © {new Date().getFullYear()} Telecom 1 LLC. All rights reserved.
         </p>
 

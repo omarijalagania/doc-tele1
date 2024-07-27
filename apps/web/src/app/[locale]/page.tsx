@@ -33,8 +33,9 @@ export default function SignUpPage({ searchParams }: SignUpPageProps) {
   }
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center">
-      <SignUpFormV2 className="w-screen max-w-screen-2xl px-4 md:px-16 lg:-my-16" />
+    <div className="flex h-screen flex-col items-center justify-start">
+      <SignUpFormV2 className="w-screen max-w-screen-2xl px-4 pt-10 md:px-16" />
+
       <FooterWeb />
     </div>
   );

@@ -31,6 +31,10 @@ export const seedUser = async ({
     email = `${nanoid()}@test.documenso.com`;
   }
 
+  if (!phone) {
+    phone = '+995555555';
+  }
+
   return await prisma.user.create({
     data: {
       name,

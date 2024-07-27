@@ -20,7 +20,7 @@ export const signUpSchema = z
       .toLowerCase()
       .min(1, { message: 'required' })
       .regex(/^[a-z0-9-]+$/, {
-        message: 'Username can only container alphanumeric characters and dashes.',
+        message: 'alphanumeric',
       }),
     phone: z.string(),
     // isAgreed: z

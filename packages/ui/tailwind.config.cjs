@@ -9,4 +9,8 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './lib/**/*.{ts,tsx}',
   ],
+
+  screens: {
+    xs: '375px',
+  },
 };

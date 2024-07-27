@@ -73,7 +73,7 @@ export const authRouter = router({
         'We were unable to create your account. Please review the information you provided and try again.';
 
       if (err instanceof Error && err.message === 'User already exists') {
-        message = 'User with this email already exists. Please use a different email address.';
+        message = 'emailAlreadyExists';
       }
 
       throw new TRPCError({

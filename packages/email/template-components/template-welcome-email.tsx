@@ -10,9 +10,9 @@ export type TemplateConfirmationEmailProps = {
 //მაილის გაგზავნის შაბლონი
 
 export const TemplateConfirmationEmail = ({
-  welcome,
   confirmationLink,
   assetBaseUrl,
+  welcome,
 }: TemplateConfirmationEmailProps) => {
   return (
     <>

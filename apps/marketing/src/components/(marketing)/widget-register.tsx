@@ -10,7 +10,7 @@ export type WidgetProps = HTMLAttributes<HTMLDivElement>;
 export const WidgetRegister = ({ className, children, ...props }: WidgetProps) => {
   return (
     <>
-      <Card className={cn('mx-auto w-full  rounded-xl', className)} gradient {...props}>
+      <Card className={cn('mx-auto max-w-3xl  rounded-xl', className)} gradient {...props}>
         <div className="w-full">{children}</div>
       </Card>
     </>
