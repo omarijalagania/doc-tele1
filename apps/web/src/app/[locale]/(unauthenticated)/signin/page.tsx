@@ -1,4 +1,5 @@
-import type { Metadata } from 'next';
+'use client';
+
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -8,10 +9,7 @@ import { IS_GOOGLE_SSO_ENABLED, IS_OIDC_SSO_ENABLED } from '@documenso/lib/const
 import { decryptSecondaryData } from '@documenso/lib/server-only/crypto/decrypt';
 
 import { SignInForm } from '~/components/forms/signin';
-
-export const metadata: Metadata = {
-  title: 'Sign In',
-};
+import { useScopedI18n } from '~/locales/client';
 
 type SignInPageProps = {
   searchParams: {
@@ -24,6 +22,7 @@ export default function SignInPage({ searchParams }: SignInPageProps) {
 
   const rawEmail = typeof searchParams.email === 'string' ? searchParams.email : undefined;
   const email = rawEmail ? decryptSecondaryData(rawEmail) : null;
+  const scopedT = useScopedI18n('auth');
 
   if (!email && rawEmail) {
     redirect('/signin');
@@ -32,11 +31,9 @@ export default function SignInPage({ searchParams }: SignInPageProps) {
   return (
     <div className="w-screen max-w-lg px-4">
       <div className="border-border dark:bg-background z-10 rounded-xl border bg-neutral-100 p-6">
-        <h1 className="text-2xl font-semibold">Sign in to your account</h1>
+        <h1 className="text-2xl font-semibold">{scopedT('signIn')}</h1>
 
-        <p className="text-muted-foreground mt-2 text-sm">
-          Welcome back, we are lucky to have you.
-        </p>
+        <p className="text-muted-foreground mt-2 text-sm">{scopedT('signInDesc')}</p>
         <hr className="-mx-6 my-4" />
 
         <SignInForm
@@ -47,9 +44,9 @@ export default function SignInPage({ searchParams }: SignInPageProps) {
 
         {NEXT_PUBLIC_DISABLE_SIGNUP !== 'true' && (
           <p className="text-muted-foreground mt-6 text-center text-sm">
-            Don't have an account?{' '}
+            {scopedT('dontHaveAccount')}{' '}
             <Link href="/signup" className="text-documenso-700 duration-200 hover:opacity-70">
-              Sign up
+              {scopedT('registerNow')}
             </Link>
           </p>
         )}
