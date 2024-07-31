@@ -2,31 +2,34 @@
 
 import Link from 'next/link';
 
-import { ForgotPasswordForm } from '~/components/forms/forgot-password';
+import { ResetPasswordForm } from '~/components/forms/reset-password';
 import { useCurrentLocale, useScopedI18n } from '~/locales/client';
 
-export default function ForgotPasswordPage() {
+function ResetPasswordContainer({ token }: { token: string }) {
   const scopedT = useScopedI18n('auth');
   const currentLocale = useCurrentLocale();
+
   return (
     <div className="w-screen max-w-lg px-4">
       <div className="w-full">
-        <h1 className="text-3xl font-semibold">{scopedT('noPassword')}</h1>
+        <h1 className="text-4xl font-semibold">{scopedT('resetPassword')}</h1>
 
-        <p className="text-muted-foreground mt-2 text-sm">{scopedT('noPasswordDesc')}</p>
+        <p className="text-muted-foreground mt-2 text-sm">{scopedT('newPassword')}</p>
 
-        <ForgotPasswordForm className="mt-4" />
+        <ResetPasswordForm token={token} className="mt-4" />
 
         <p className="text-muted-foreground mt-6 text-center text-sm">
-          {scopedT('rememberedPassword')}{' '}
+          Don't have an account?{' '}
           <Link
-            href={`/${currentLocale}/signin`}
+            href={`/${currentLocale}/signup`}
             className="text-primary duration-200 hover:opacity-70"
           >
-            {scopedT('signIn')}
+            Sign up
           </Link>
         </p>
       </div>
     </div>
   );
 }
+
+export default ResetPasswordContainer;

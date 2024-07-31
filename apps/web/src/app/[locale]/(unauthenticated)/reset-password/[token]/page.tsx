@@ -1,9 +1,8 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { getResetTokenValidity } from '@documenso/lib/server-only/user/get-reset-token-validity';
 
-import { ResetPasswordForm } from '~/components/forms/reset-password';
+import ResetPasswordContainer from '~/components/forms/reset-password/reset-password-container';
 
 type ResetPasswordPageProps = {
   params: {
@@ -18,22 +17,5 @@ export default async function ResetPasswordPage({ params: { token } }: ResetPass
     redirect('/reset-password');
   }
 
-  return (
-    <div className="w-screen max-w-lg px-4">
-      <div className="w-full">
-        <h1 className="text-4xl font-semibold">Reset Password</h1>
-
-        <p className="text-muted-foreground mt-2 text-sm">Please choose your new password </p>
-
-        <ResetPasswordForm token={token} className="mt-4" />
-
-        <p className="text-muted-foreground mt-6 text-center text-sm">
-          Don't have an account?{' '}
-          <Link href="/signup" className="text-primary duration-200 hover:opacity-70">
-            Sign up
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
+  return <ResetPasswordContainer token={token} />;
 }

@@ -20,8 +20,15 @@ import {
 import { Input } from '@documenso/ui/primitives/input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
+import { messages } from '~/config/messages';
+import { useCurrentLocale, useScopedI18n } from '~/locales/client';
+
 export const ZForgotPasswordFormSchema = z.object({
-  email: z.string().email().min(1),
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: 'required' })
+    .email({ message: messages.invalidEmail }),
 });
 
 export type TForgotPasswordFormSchema = z.infer<typeof ZForgotPasswordFormSchema>;
@@ -33,7 +40,8 @@ export type ForgotPasswordFormProps = {
 export const ForgotPasswordForm = ({ className }: ForgotPasswordFormProps) => {
   const router = useRouter();
   const { toast } = useToast();
-
+  const scopedT = useScopedI18n('auth');
+  const currentLocale = useCurrentLocale();
   const form = useForm<TForgotPasswordFormSchema>({
     values: {
       email: '',
@@ -49,15 +57,14 @@ export const ForgotPasswordForm = ({ className }: ForgotPasswordFormProps) => {
     await forgotPassword({ email }).catch(() => null);
 
     toast({
-      title: 'Reset email sent',
-      description:
-        'A password reset email has been sent, if you have an account you should see it in your inbox shortly.',
+      title: scopedT('resetEmailSent'),
+      description: scopedT('resetEmailDesc'),
       duration: 5000,
     });
 
     form.reset();
 
-    router.push('/check-email');
+    router.push(`/${currentLocale}/check-email`);
   };
 
   return (
@@ -72,7 +79,7 @@ export const ForgotPasswordForm = ({ className }: ForgotPasswordFormProps) => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{scopedT('email')}</FormLabel>
                 <FormControl>
                   <Input type="email" {...field} />
                 </FormControl>
@@ -83,7 +90,7 @@ export const ForgotPasswordForm = ({ className }: ForgotPasswordFormProps) => {
         </fieldset>
 
         <Button size="lg" loading={isSubmitting}>
-          {isSubmitting ? 'Sending Reset Email...' : 'Reset Password'}
+          {isSubmitting ? scopedT('loading') : scopedT('resetPassword')}
         </Button>
       </form>
     </Form>
