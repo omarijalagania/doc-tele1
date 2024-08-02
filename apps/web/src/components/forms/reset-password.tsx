@@ -22,6 +22,8 @@ import {
 import { PasswordInput } from '@documenso/ui/primitives/password-input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
+import { useScopedI18n } from '~/locales/client';
+
 export const ZResetPasswordFormSchema = z
   .object({
     password: ZPasswordSchema,
@@ -66,8 +68,8 @@ export const ResetPasswordForm = ({ className, token }: ResetPasswordFormProps) 
       form.reset();
 
       toast({
-        title: 'Password updated',
-        description: 'Your password has been updated successfully.',
+        title: scopedT('passwordUpdated'),
+        description: scopedT('updatePasswordSuccess'),
         duration: 5000,
       });
 
@@ -90,6 +92,8 @@ export const ResetPasswordForm = ({ className, token }: ResetPasswordFormProps) 
     }
   };
 
+  const scopedT = useScopedI18n('auth');
+
   return (
     <Form {...form}>
       <form
@@ -102,7 +106,7 @@ export const ResetPasswordForm = ({ className, token }: ResetPasswordFormProps) 
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{scopedT('password')}</FormLabel>
                 <FormControl>
                   <PasswordInput {...field} />
                 </FormControl>
@@ -116,7 +120,7 @@ export const ResetPasswordForm = ({ className, token }: ResetPasswordFormProps) 
             name="repeatedPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Repeat Password</FormLabel>
+                <FormLabel>{scopedT('repeatPassword')}</FormLabel>
                 <FormControl>
                   <PasswordInput {...field} />
                 </FormControl>
@@ -127,7 +131,7 @@ export const ResetPasswordForm = ({ className, token }: ResetPasswordFormProps) 
         </fieldset>
 
         <Button type="submit" size="lg" loading={isSubmitting}>
-          {isSubmitting ? 'Resetting Password...' : 'Reset Password'}
+          {isSubmitting ? scopedT('loading') : scopedT('resetPassword')}
         </Button>
       </form>
     </Form>

@@ -37,7 +37,7 @@ export const updatePassword = async ({
   // Compare the new password with the old password
   const isSamePassword = await compare(password, user.password);
   if (isSamePassword) {
-    throw new Error('Your new password cannot be the same as your old password.');
+    throw new Error('isSamePassword');
   }
 
   const hashedNewPassword = await hash(password, SALT_ROUNDS);
