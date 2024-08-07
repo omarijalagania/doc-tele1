@@ -4,13 +4,9 @@ import { TemplateDocumentImage } from './template-document-image';
 export type TemplateConfirmationEmailProps = {
   confirmationLink: string;
   assetBaseUrl: string;
-  welcome: string;
 };
 
-//მაილის გაგზავნის შაბლონი
-
 export const TemplateConfirmationEmail = ({
-  welcome,
   confirmationLink,
   assetBaseUrl,
 }: TemplateConfirmationEmailProps) => {
@@ -20,7 +16,7 @@ export const TemplateConfirmationEmail = ({
 
       <Section className="flex-row items-center justify-center">
         <Text className="text-primary mx-auto mb-0 max-w-[80%] text-center text-lg font-semibold">
-          {welcome}
+          Welcome to Documenso!
         </Text>
 
         <Text className="my-1 text-center text-base text-slate-400">

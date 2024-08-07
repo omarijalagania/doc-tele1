@@ -1,6 +1,5 @@
 import config from '@documenso/tailwind-config';
 
-import { useCurrentLocale } from '../../../apps/web/src/locales/client';
 import { Body, Container, Head, Html, Img, Preview, Section, Tailwind } from '../components';
 import type { TemplateConfirmationEmailProps } from '../template-components/template-confirmation-email';
 import { TemplateConfirmationEmail } from '../template-components/template-confirmation-email';
@@ -15,10 +14,6 @@ export const ConfirmEmailTemplate = ({
   const getAssetUrl = (path: string) => {
     return new URL(path, assetBaseUrl).toString();
   };
-
-  const locale = useCurrentLocale();
-
-  const welcome = locale === 'en' ? 'Welcome to eSignix!' : 'მოგესალმებით eSignix-ზე!';
 
   return (
     <Html>
@@ -44,7 +39,6 @@ export const ConfirmEmailTemplate = ({
                 />
 
                 <TemplateConfirmationEmail
-                  welcome={welcome}
                   confirmationLink={confirmationLink}
                   assetBaseUrl={assetBaseUrl}
                 />

@@ -11,7 +11,7 @@ export interface SendConfirmationEmailProps {
   userId: number;
 }
 
-const welcome = 'მოგესალმებით eSignix-ზე!';
+const welcome = 'welcome';
 
 export const sendConfirmationEmail = async ({ userId }: SendConfirmationEmailProps) => {
   const NEXT_PRIVATE_SMTP_FROM_NAME = process.env.NEXT_PRIVATE_SMTP_FROM_NAME;
@@ -31,6 +31,8 @@ export const sendConfirmationEmail = async ({ userId }: SendConfirmationEmailPro
     },
   });
 
+  console.log('user', userId);
+
   const [verificationToken] = user.VerificationToken;
 
   if (!verificationToken?.token) {
@@ -45,7 +47,6 @@ export const sendConfirmationEmail = async ({ userId }: SendConfirmationEmailPro
   const confirmationTemplate = createElement(ConfirmEmailTemplate, {
     assetBaseUrl,
     confirmationLink,
-    welcome: welcome,
   });
 
   return mailer.sendMail({
